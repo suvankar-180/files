@@ -1,0 +1,71 @@
+package com.teamteach.files.controllers;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import com.teamteach.files.services.S3Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+@RestController
+@RequestMapping("s3")
+public class S3Controller {
+
+	@Autowired
+	private S3Service s3Service;
+	
+	@PostMapping("upload/{folder}")
+	public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable String folder) {
+		System.out.println("Upload-" + file);
+		String s3Url = "";
+		try {
+			File fileObj = convertMultiPartToFile(file);
+			String key = folder+'/'+file.getOriginalFilename();
+			System.out.println(key);
+			s3Url = s3Service.uploadPhoto(key, fileObj);
+			fileObj.delete();
+		} catch (IOException e) {
+			return ResponseEntity.ok(e.getMessage());
+		}
+		return ResponseEntity.ok(s3Url);
+	}
+	
+	@GetMapping("download")
+	public ResponseEntity<byte[]> downloadFile(@RequestParam("fileName") String fileName) {
+		System.out.println("Download-" + fileName);
+		byte[] content = null;
+		try {
+			String key = fileName;
+			content= s3Service.downloadPhoto(key);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" +fileName + "\"").body(content);
+		
+	}
+	
+	@PostMapping("delete")
+	public void deleteFile(@RequestParam("fileName") String fileName) {
+		System.out.println("Delete-" + fileName);
+		try {
+			String key = fileName;
+			s3Service.deleteFile(key);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	private File convertMultiPartToFile(MultipartFile file) throws IOException {
+	    File convFile = new File(file.getOriginalFilename());
+	    FileOutputStream fos = new FileOutputStream(convFile);
+	    fos.write(file.getBytes());
+	    fos.close();
+	    return convFile;
+	}
+}
