@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.teamteach.files.models.UploadResponse;
 
 @RestController
 @RequestMapping("files")
@@ -19,7 +20,7 @@ public class S3Controller {
 	private S3Service s3Service;
 	
 	@PostMapping("upload/{folder}")
-	public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable String folder) {
+	public ResponseEntity<UploadResponse> uploadFile(@RequestParam("file") MultipartFile file, @PathVariable String folder) {
 		System.out.println("Upload-" + file);
 		String s3Url = "";
 		try {
@@ -29,9 +30,9 @@ public class S3Controller {
 			s3Url = s3Service.uploadPhoto(key, fileObj);
 			fileObj.delete();
 		} catch (IOException e) {
-			return ResponseEntity.ok(e.getMessage());
+			return ResponseEntity.ok(new UploadResponse(e.getMessage()));
 		}
-		return ResponseEntity.ok(s3Url);
+		return ResponseEntity.ok(new UploadResponse(s3Url));
 	}
 	
 	@GetMapping("download")
