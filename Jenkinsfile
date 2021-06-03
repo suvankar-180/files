@@ -2,6 +2,9 @@ pipeline {
     agent any
     stages {
         stage('Build The Image') {
+            when {
+                branch 'main' 
+            }
             steps {
                 sh 'mvn clean install -Ddocker'
             }
