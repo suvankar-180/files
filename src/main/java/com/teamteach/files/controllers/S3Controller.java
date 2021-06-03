@@ -48,7 +48,7 @@ public class S3Controller {
 			File fileObj = convertMultiPartToFile(file);
 			ScormObject scormObject = scormService.analyseContent(folder, fileObj);
 			fileObj.delete();
-			return ResponseEntity.ok(new ObjectResponse(true, "File uploaded successfully", scormObject));
+			return ResponseEntity.ok(new ObjectResponse(true, "Content analysed successfully", scormObject));
 		} catch (IOException e) {
 			return ResponseEntity.ok(new ObjectResponse(false, e.getMessage(), null));
 		}
