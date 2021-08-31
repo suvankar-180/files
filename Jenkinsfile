@@ -4,7 +4,7 @@ pipeline {
         REPO = "333490196116.dkr.ecr.ap-south-1.amazonaws.com"
         PROJECT = "teamteach-files"
         USER = "ec2-user"
-        DOMAIN = "myfamilycoach.ml"
+        DOMAIN = "digisherpa.ai"
     }
     stages{
         stage('Build') {
