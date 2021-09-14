@@ -1,10 +1,9 @@
 pipeline {
     agent any
     environment {
-        REPO = "333490196116.dkr.ecr.ap-south-1.amazonaws.com"
         PROJECT = "teamteach-files"
         USER = "ec2-user"
-        DOMAIN = "digisherpa.ai"
+        REGION = "ap-south-1"
     }
     stages{
         stage('Build') {
@@ -16,17 +15,17 @@ pipeline {
         }
         stage('Push to ECR') {
             steps {
-                sh 'docker tag ${PROJECT}:${GIT_BRANCH} ${REPO}/${PROJECT}:${GIT_BRANCH}'
+                sh 'docker tag ${PROJECT}:${GIT_BRANCH} ${AWS_REPO}/${PROJECT}:${GIT_BRANCH}'
                 sh '$(aws ecr get-login --no-include-email --region ap-south-1)'
-                sh "docker push ${REPO}/${PROJECT}:${GIT_BRANCH}"
+                sh "docker push ${AWS_REPO}/${PROJECT}:${GIT_BRANCH}"
             }
         }
         stage('Pull & Run') {
             steps {
-                sh 'echo \'$(aws ecr get-login --no-include-email --region ap-south-1)\' > ${GIT_BRANCH}.sh'
-                sh 'echo docker pull $REPO/$PROJECT:$GIT_BRANCH >> ${GIT_BRANCH}.sh'
+                sh 'echo \'$(aws ecr get-login --no-include-email --region $REGION)\' > ${GIT_BRANCH}.sh'
+                sh 'echo docker pull $AWS_REPO/$PROJECT:$GIT_BRANCH >> ${GIT_BRANCH}.sh'
                 sh 'echo docker rm -f $PROJECT >> ${GIT_BRANCH}.sh'
-                sh 'echo docker run -p 8085:8085 -d --name $PROJECT $REPO/$PROJECT:$GIT_BRANCH >> ${GIT_BRANCH}.sh'
+                sh 'echo docker run -p 8085:8085 -d --name $PROJECT $AWS_REPO/$PROJECT:$GIT_BRANCH >> ${GIT_BRANCH}.sh'
                 sh 'cat ${GIT_BRANCH}.sh | ssh ${USER}@$GIT_BRANCH.$DOMAIN' 
             }
         }
