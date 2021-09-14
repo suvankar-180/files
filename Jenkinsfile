@@ -4,7 +4,7 @@ pipeline {
         PROJECT = "teamteach-files"
         USER = "ec2-user"
         REGION = "$REGION"
-        ECR_LOGIN = "$ECR_LOGIN"
+        ECR_LOGIN = "aws ecr get-login --no-include-email --region $REGION"
     }
     stages{
         stage('Build') {
