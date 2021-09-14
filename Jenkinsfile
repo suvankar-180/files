@@ -24,6 +24,7 @@ pipeline {
                 expression { env.GIT_BRANCH == env.BRANCH_TWO }
             } }
             steps {
+                sh 'docker images | grep ${PROJECT}:${GIT_BRANCH}'
                 sh 'docker tag ${PROJECT}:${GIT_BRANCH} ${AWS_REPO}/${PROJECT}:${GIT_BRANCH}'
                 sh '$($ECR_LOGIN)'
                 sh "docker push ${AWS_REPO}/${PROJECT}:${GIT_BRANCH}"
