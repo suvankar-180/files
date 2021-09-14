@@ -8,8 +8,8 @@ pipeline {
     stages{
         stage('Build') {
             when { anyOf {
-                expression { $GIT_BRANCH == $BRANCH_ONE }
-                expression { $GIT_BRANCH == $BRANCH_TWO }
+                expression { env.GIT_BRANCH == $BRANCH_ONE }
+                expression { env.GIT_BRANCH == $BRANCH_TWO }
             } }
             steps {
                 sh 'echo $GIT_BRANCH'
