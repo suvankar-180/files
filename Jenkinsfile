@@ -36,10 +36,11 @@ pipeline {
                 expression { env.GIT_BRANCH == env.BRANCH_TWO }
             } }
             steps {
-                sh 'echo \'$($ECR_LOGIN)\' > ${GIT_BRANCH}.sh'
+                sh 'echo \$(${ECR_LOGIN}) > ${GIT_BRANCH}.sh'
                 sh 'echo docker pull $AWS_REPO/$PROJECT:$GIT_BRANCH >> ${GIT_BRANCH}.sh'
                 sh 'echo docker rm -f $PROJECT >> ${GIT_BRANCH}.sh'
                 sh 'echo docker run -p 8085:8085 -d --name $PROJECT $AWS_REPO/$PROJECT:$GIT_BRANCH >> ${GIT_BRANCH}.sh'
+                sh 'cat ${GIT_BRANCH}.sh'
                 sh 'cat ${GIT_BRANCH}.sh | ssh ${USER}@$GIT_BRANCH.$DOMAIN' 
             }
         }
