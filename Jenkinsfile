@@ -4,6 +4,7 @@ pipeline {
         PROJECT = "teamteach-files"
         USER = "ec2-user"
         REGION = "$REGION"
+        ECR_LOGIN = "$ECR_LOGIN"
     }
     stages{
         stage('Build') {
@@ -24,7 +25,7 @@ pipeline {
             } }
             steps {
                 sh 'docker tag ${PROJECT}:${GIT_BRANCH} ${AWS_REPO}/${PROJECT}:${GIT_BRANCH}'
-                sh '$(aws ecr get-login --no-include-email --region $REGION)'
+                sh '$($ECR_LOGIN)'
                 sh "docker push ${AWS_REPO}/${PROJECT}:${GIT_BRANCH}"
             }
         }
@@ -34,7 +35,7 @@ pipeline {
                 expression { env.GIT_BRANCH == env.BRANCH_TWO }
             } }
             steps {
-                sh 'echo \'$(aws ecr get-login --no-include-email --region $REGION)\' > ${GIT_BRANCH}.sh'
+                sh 'echo \'$($ECR_LOGIN)\' > ${GIT_BRANCH}.sh'
                 sh 'echo docker pull $AWS_REPO/$PROJECT:$GIT_BRANCH >> ${GIT_BRANCH}.sh'
                 sh 'echo docker rm -f $PROJECT >> ${GIT_BRANCH}.sh'
                 sh 'echo docker run -p 8085:8085 -d --name $PROJECT $AWS_REPO/$PROJECT:$GIT_BRANCH >> ${GIT_BRANCH}.sh'
@@ -47,7 +48,7 @@ pipeline {
                 expression { env.GIT_BRANCH == env.BRANCH_TWO }
             } }
             steps {
-                sh 'echo \'$(aws ecr get-login --no-include-email --region $REGION)\' > ${GIT_BRANCH}.sh'
+                sh 'echo \'$($ECR_LOGIN)\' > ${GIT_BRANCH}.sh'
                 sh 'docker image prune -a >> ${GIT_BRANCH}.sh'
                 sh 'cat ${GIT_BRANCH}.sh | ssh ${USER}@$GIT_BRANCH.$DOMAIN' 
             }
