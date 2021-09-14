@@ -7,6 +7,10 @@ pipeline {
     }
     stages{
         stage('Build') {
+            when { anyOf {
+                expression { $GIT_BRANCH == $BRANCH_ONE }
+                expression { $GIT_BRANCH == $BRANCH_TWO }
+            } }
             steps {
                 sh 'echo $GIT_BRANCH'
                 sh "cp src/main/resources/application-${GIT_BRANCH}.properties src/main/resources/application.properties"
@@ -14,6 +18,10 @@ pipeline {
             }
         }
         stage('Push to ECR') {
+            when { anyOf {
+                expression { $GIT_BRANCH == $BRANCH_ONE }
+                expression { $GIT_BRANCH == $BRANCH_TWO }
+            } }
             steps {
                 sh 'docker tag ${PROJECT}:${GIT_BRANCH} ${AWS_REPO}/${PROJECT}:${GIT_BRANCH}'
                 sh '$(aws ecr get-login --no-include-email --region $REGION)'
@@ -21,6 +29,10 @@ pipeline {
             }
         }
         stage('Pull & Run') {
+            when { anyOf {
+                expression { $GIT_BRANCH == $BRANCH_ONE }
+                expression { $GIT_BRANCH == $BRANCH_TWO }
+            } }
             steps {
                 sh 'echo \'$(aws ecr get-login --no-include-email --region $REGION)\' > ${GIT_BRANCH}.sh'
                 sh 'echo docker pull $AWS_REPO/$PROJECT:$GIT_BRANCH >> ${GIT_BRANCH}.sh'
@@ -30,7 +42,10 @@ pipeline {
             }
         }
         stage('Cleanup') {
-            when { branch 'dev' }
+            when { anyOf {
+                expression { $GIT_BRANCH == $BRANCH_ONE }
+                expression { $GIT_BRANCH == $BRANCH_TWO }
+            } }
             steps {
                 sh 'ssh ${USER}@$GIT_BRANCH.$DOMAIN \'$(aws ecr get-login --no-include-email --region $REGION) ; docker image prune -a \''
             }
