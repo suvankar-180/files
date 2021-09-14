@@ -19,8 +19,8 @@ pipeline {
         }
         stage('Push to ECR') {
             when { anyOf {
-                expression { $GIT_BRANCH == $BRANCH_ONE }
-                expression { $GIT_BRANCH == $BRANCH_TWO }
+                expression { env.GIT_BRANCH == env.BRANCH_ONE }
+                expression { env.GIT_BRANCH == env.BRANCH_TWO }
             } }
             steps {
                 sh 'docker tag ${PROJECT}:${GIT_BRANCH} ${AWS_REPO}/${PROJECT}:${GIT_BRANCH}'
@@ -30,8 +30,8 @@ pipeline {
         }
         stage('Pull & Run') {
             when { anyOf {
-                expression { $GIT_BRANCH == $BRANCH_ONE }
-                expression { $GIT_BRANCH == $BRANCH_TWO }
+                expression { env.GIT_BRANCH == env.BRANCH_ONE }
+                expression { env.GIT_BRANCH == env.BRANCH_TWO }
             } }
             steps {
                 sh 'echo \'$(aws ecr get-login --no-include-email --region $REGION)\' > ${GIT_BRANCH}.sh'
@@ -43,8 +43,8 @@ pipeline {
         }
         stage('Cleanup') {
             when { anyOf {
-                expression { $GIT_BRANCH == $BRANCH_ONE }
-                expression { $GIT_BRANCH == $BRANCH_TWO }
+                expression { env.GIT_BRANCH == env.BRANCH_ONE }
+                expression { env.GIT_BRANCH == env.BRANCH_TWO }
             } }
             steps {
                 sh 'ssh ${USER}@$GIT_BRANCH.$DOMAIN \'$(aws ecr get-login --no-include-email --region $REGION) ; docker image prune -a \''
