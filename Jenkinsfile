@@ -49,9 +49,7 @@ pipeline {
                 expression { env.GIT_BRANCH == env.BRANCH_TWO }
             } }
             steps {
-                sh 'echo \'$($ECR_LOGIN)\' > ${GIT_BRANCH}.sh'
-                sh 'docker image prune -a >> ${GIT_BRANCH}.sh'
-                sh 'cat ${GIT_BRANCH}.sh | ssh ${USER}@$GIT_BRANCH.$DOMAIN' 
+                sh 'docker image prune -a -f'
             }
         }
     }
