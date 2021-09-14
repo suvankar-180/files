@@ -48,7 +48,7 @@ pipeline {
             } }
             steps {
                 sh 'echo \'$(aws ecr get-login --no-include-email --region $REGION)\' > ${GIT_BRANCH}.sh'
-                sh 'docker image prune -a' >> ${GIT_BRANCH}.sh'
+                sh 'docker image prune -a >> ${GIT_BRANCH}.sh'
                 sh 'cat ${GIT_BRANCH}.sh | ssh ${USER}@$GIT_BRANCH.$DOMAIN' 
             }
         }
