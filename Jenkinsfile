@@ -43,14 +43,5 @@ pipeline {
                 sh 'cat ${GIT_BRANCH}.sh | ssh ${USER}@$GIT_BRANCH.$DOMAIN' 
             }
         }
-        stage('Cleanup') {
-            when { anyOf {
-                expression { env.GIT_BRANCH == env.BRANCH_ONE }
-                expression { env.GIT_BRANCH == env.BRANCH_TWO }
-            } }
-            steps {
-                sh 'docker image prune -a -f'
-            }
-        }
     }
 }
