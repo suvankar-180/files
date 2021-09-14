@@ -3,7 +3,7 @@ pipeline {
     environment {
         PROJECT = "teamteach-files"
         USER = "ec2-user"
-        REGION = "ap-south-1"
+        REGION = "$REGION"
     }
     stages{
         stage('Build') {
@@ -16,7 +16,7 @@ pipeline {
         stage('Push to ECR') {
             steps {
                 sh 'docker tag ${PROJECT}:${GIT_BRANCH} ${AWS_REPO}/${PROJECT}:${GIT_BRANCH}'
-                sh '$(aws ecr get-login --no-include-email --region ap-south-1)'
+                sh '$(aws ecr get-login --no-include-email --region $REGION)'
                 sh "docker push ${AWS_REPO}/${PROJECT}:${GIT_BRANCH}"
             }
         }
@@ -32,7 +32,7 @@ pipeline {
         stage('Cleanup') {
             when { branch 'dev' }
             steps {
-                sh 'ssh ${USER}@$GIT_BRANCH.$DOMAIN \'$(aws ecr get-login --no-include-email --region ap-south-1) ; docker image prune -a \''
+                sh 'ssh ${USER}@$GIT_BRANCH.$DOMAIN \'$(aws ecr get-login --no-include-email --region $REGION) ; docker image prune -a \''
             }
         }
     }
