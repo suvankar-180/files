@@ -19,6 +19,7 @@ pipeline {
             steps {
                 sh 'echo $REPO'
                 sh 'echo $GIT_BRANCH'
+                sh 'cp src/main/resources/${APP_DOMAIN}.properties src/main/resources/application.properties'
                 sh "mvn install -Ddocker -Dbranch=${GIT_BRANCH}"
             }
         }
