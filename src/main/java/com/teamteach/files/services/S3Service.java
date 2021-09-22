@@ -38,7 +38,7 @@ public class S3Service {
 	private void initializeAmazon() {
 		AWSCredentials credentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
 		this.s3Client = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(credentials))
-				.withRegion(Regions.AP_SOUTH_1).build();
+				.withRegion(Regions.EU_WEST_2).build();
 	}
 
 	public String uploadPhoto(String key, File file) {
