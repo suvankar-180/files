@@ -34,11 +34,14 @@ public class S3Service {
 	@Value("${awsSecretKey}")
 	private String secretKey;
 
+	@Value("${region}")
+	private String region;
+
 	@PostConstruct
 	private void initializeAmazon() {
 		AWSCredentials credentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
 		this.s3Client = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(credentials))
-				.withRegion(Regions.EU_WEST_2).build();
+				.withRegion(region).build();
 	}
 
 	public String uploadPhoto(String key, File file) {
