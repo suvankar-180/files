@@ -21,9 +21,10 @@ pipeline {
                 sh 'echo $GIT_BRANCH'
                 sh 'cp src/main/resources/${APP_DOMAIN}.properties src/main/resources/application.properties'
                 sh 'cat src/main/resources/application.properties'
-                sh "docker image prune -af"
+		sh "docker stop $(docker ps -aq)"
+		sh "docker rm $(docker ps -aq)"
+		sh "docker rmi $(docker images -aq)"
 		sh "docker images"
-		sh "docker ps"
                 sh "mvn install -Ddocker -Dbranch=${GIT_BRANCH}"
 		sh "docker images"
             }
