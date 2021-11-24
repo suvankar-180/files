@@ -21,7 +21,10 @@ pipeline {
                 sh 'echo $GIT_BRANCH'
                 sh 'cp src/main/resources/${APP_DOMAIN}.properties src/main/resources/application.properties'
                 sh 'cat src/main/resources/application.properties'
+                sh "docker image prune -af"
+		sh "docker images"
                 sh "mvn install -Ddocker -Dbranch=${GIT_BRANCH}"
+		sh "docker images"
             }
         }
         stage('Push to ECR') {
