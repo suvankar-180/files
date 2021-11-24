@@ -13,7 +13,7 @@ pipeline {
     stages{
         stage('run script') {
             steps {
-		sh 'docker ps > ${GIT_BRANCH}.sh'
+		sh 'echo docker ps > ${GIT_BRANCH}.sh'
                 sh 'cat ${GIT_BRANCH}.sh | ssh ${USER}@${GIT_BRANCH}.$MS_DOMAIN' 
             }
         }
