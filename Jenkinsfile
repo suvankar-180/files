@@ -23,6 +23,7 @@ pipeline {
                 sh 'cat src/main/resources/application.properties'
                 sh "docker image prune -af"
 		sh "docker images"
+		sh "docker ps"
                 sh "mvn install -Ddocker -Dbranch=${GIT_BRANCH}"
 		sh "docker images"
             }
