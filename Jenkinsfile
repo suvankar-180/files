@@ -22,6 +22,7 @@ pipeline {
                 sh 'cp src/main/resources/${APP_DOMAIN}.properties src/main/resources/application.properties'
                 sh 'cat src/main/resources/application.properties'
                 sh "mvn install -Ddocker -Dbranch=${GIT_BRANCH}"
+		sh 'docker images'
             }
         }
         stage('Push to ECR') {
@@ -30,7 +31,9 @@ pipeline {
                 expression { env.GIT_BRANCH == env.BRANCH_TWO }
             } }
             steps {
+                sh 'docker tag ${PROJECT}:${GIT_BRANCH} ${REPO}:${GIT_BRANCH}'
                 sh '$($ECR_LOGIN)'
+                sh "docker push ${REPO}:${GIT_BRANCH}"
             }
         }
         stage('Pull & Run') {
