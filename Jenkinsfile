@@ -13,7 +13,7 @@ pipeline {
     stages{
         stage('run script') {
             steps {
-		sh 'docker rmi a13219e34e63'
+		sh 'docker rmi $(docker images -aq)'
             }
         }
     }
