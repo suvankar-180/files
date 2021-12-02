@@ -17,7 +17,22 @@ pipeline {
                 expression { env.GIT_BRANCH == env.BRANCH_TWO }
             } }
             steps {
-                sh 'rm -rf /var/lib/jenkins/workspace'
+                sh 'rm -rf /var/lib/jenkins/workspace/tt-ms-java-journals'
+                sh 'rm -rf /var/lib/jenkins/workspace/tt-ms-java-users'
+                sh 'rm -rf /var/lib/jenkins/workspace/tt-ms-java-gateway'
+                sh 'rm -rf /var/lib/jenkins/workspace/tt-ms-java-learnings'
+                sh 'rm -rf /var/lib/jenkins/workspace/tt-ms-java-notifications'
+                sh 'rm -rf /var/lib/jenkins/workspace/tt-ms-java-recommendations'
+                sh 'rm -rf /var/lib/jenkins/workspace/tt-ms-java-profiles'
+                sh 'rm -rf /var/lib/jenkins/workspace/tt-ms-java-commons'
+                sh 'rm -rf /var/lib/jenkins/workspace/tt-ms-nodejs-pdf'
+                sh 'rm -rf /var/lib/jenkins/workspace/tt-ms-nodejs-jobs'
+                sh 'rm -rf /var/lib/jenkins/workspace/tt-ms-nodejs-contenthub'
+                sh 'rm -rf /var/lib/jenkins/workspace/tt-app-react-admin
+                sh 'rm -rf /var/lib/jenkins/workspace/tt-app-react-myfamilycoach
+                sh 'rm -rf /var/lib/jenkins/workspace/tt-data-amq-rabbitmq'
+                sh 'rm -rf /var/lib/jenkins/workspace/tt-data-amq-mongodb'
+                sh 'rm -rf /var/lib/jenkins/workspace/tt-data-amq-mariadb'
             }
         }
     }
